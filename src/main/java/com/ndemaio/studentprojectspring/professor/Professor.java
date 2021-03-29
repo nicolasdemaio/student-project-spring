@@ -22,8 +22,6 @@ public class Professor {
 
     private String firstName;
     private String lastName;
-
-    @Temporal (TemporalType.DATE)
     private LocalDate birthDate;
 
     @Column (columnDefinition = "boolean default true") // Por defecto es verdadero

@@ -29,7 +29,6 @@ public class Student {
     @Enumerated (EnumType.STRING) // Crea una entidad Gender por nombre
     private Gender gender;
 
-    @Temporal (TemporalType.DATE) // Indica que es un tiempo y solo la fecha, sin hora.
     private LocalDate birthDate;
 
     public int calculateAge() {

@@ -1,8 +1,8 @@
 package com.ndemaio.studentprojectspring.student;
 
 import com.ndemaio.studentprojectspring.mail.MailService;
-import com.ndemaio.studentprojectspring.student.exceptions.EmailNotAvailableException;
-import com.ndemaio.studentprojectspring.student.exceptions.StudentUnderAgeException;
+import com.ndemaio.studentprojectspring.config.exceptions.EmailNotAvailableException;
+import com.ndemaio.studentprojectspring.config.exceptions.StudentUnderAgeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

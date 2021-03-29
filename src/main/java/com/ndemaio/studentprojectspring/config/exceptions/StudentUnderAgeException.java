@@ -1,4 +1,4 @@
-package com.ndemaio.studentprojectspring.student.exceptions;
+package com.ndemaio.studentprojectspring.config.exceptions;
 
 public class StudentUnderAgeException extends RuntimeException {
 
