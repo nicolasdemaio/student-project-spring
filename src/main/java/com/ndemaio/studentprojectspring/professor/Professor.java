@@ -1,18 +1,17 @@
 package com.ndemaio.studentprojectspring.professor;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 @Entity
 @Table (name = "professor")
 public class Professor {
@@ -25,7 +24,7 @@ public class Professor {
     private String lastName;
 
     @Temporal (TemporalType.DATE)
-    private Date birthDate;
+    private LocalDate birthDate;
 
     @Column (columnDefinition = "boolean default true") // Por defecto es verdadero
     private boolean isActive;

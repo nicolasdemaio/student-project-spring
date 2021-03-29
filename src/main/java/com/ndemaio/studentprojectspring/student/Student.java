@@ -22,6 +22,8 @@ public class Student {
 
     private String firstName;
     private String lastName;
+
+    @Column (nullable = false)
     private String email;
 
     @Enumerated (EnumType.STRING) // Crea una entidad Gender por nombre

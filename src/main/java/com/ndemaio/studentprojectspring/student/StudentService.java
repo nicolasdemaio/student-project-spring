@@ -1,11 +1,12 @@
 package com.ndemaio.studentprojectspring.student;
 
 import com.ndemaio.studentprojectspring.mail.MailService;
-import com.ndemaio.studentprojectspring.student.exceptions.StudentNotFoundException;
+import com.ndemaio.studentprojectspring.student.exceptions.EmailNotAvailableException;
 import com.ndemaio.studentprojectspring.student.exceptions.StudentUnderAgeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,11 +27,17 @@ public class StudentService {
 
     public Student signUp(Student student) {
 
+        String studentEmail = student.getEmail();
+
         if (isStudentUnderAge(student)){
             throw new StudentUnderAgeException(STUDENT_UNDER_AGE_MSG);
         }
 
-        mailService.sendMail(student.getEmail(), "You have been enrolled satisfactory.");
+        if (studentRepository.existsByEmail(studentEmail)) {
+            throw new EmailNotAvailableException("Indicated email is already in use.");
+        }
+
+        mailService.sendMail(studentEmail, "You have been enrolled satisfactory.");
         return studentRepository.save(student);
     }
 
@@ -39,7 +46,7 @@ public class StudentService {
         Optional<Student> optionalStudent = studentRepository.findById(studentId);
 
         if (optionalStudent.isEmpty()){
-            throw new StudentNotFoundException("Student not founded with ID ".concat(String.valueOf(studentId)));
+            throw new EntityNotFoundException("Student not founded with ID ".concat(String.valueOf(studentId)));
         }
 
         return optionalStudent.get();

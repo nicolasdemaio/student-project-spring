@@ -1,11 +1,12 @@
 package com.ndemaio.studentprojectspring.student;
 
 import com.ndemaio.studentprojectspring.mail.MailService;
-import com.ndemaio.studentprojectspring.student.exceptions.StudentNotFoundException;
+import com.ndemaio.studentprojectspring.student.exceptions.EmailNotAvailableException;
 import com.ndemaio.studentprojectspring.student.exceptions.StudentUnderAgeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -71,7 +72,7 @@ class StudentServiceTest {
         when(studentRepository.findById(inexistentId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> underTest.getStudent(inexistentId))
-                .isInstanceOf(StudentNotFoundException.class)
+                .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage("Student not founded with ID ".concat(String.valueOf(inexistentId)));
 
         verify(studentRepository).findById(inexistentId);
@@ -88,7 +89,7 @@ class StudentServiceTest {
     void deleteStudentByInexistentId_shouldThrowException(){
         Long inexistentId = 1l;
 
-        assertThatThrownBy(() -> underTest.deleteStudent(inexistentId)).isInstanceOf(StudentNotFoundException.class);
+        assertThatThrownBy(() -> underTest.deleteStudent(inexistentId)).isInstanceOf(EntityNotFoundException.class);
 
         verify(studentRepository, never()).deleteById(inexistentId);
     }
@@ -105,6 +106,21 @@ class StudentServiceTest {
         underTest.deleteStudent(studentId);
 
         verify(studentRepository).deleteById(studentId);
+    }
+
+    @Test
+    void itCantSignUpStudentWithAlreadyRegisteredEmail(){
+
+        String studentEmail = "test@mail.com";
+        Student student = mock(Student.class);
+        when(student.getEmail()).thenReturn(studentEmail);
+        when(student.calculateAge()).thenReturn(20);
+
+        when(studentRepository.existsByEmail(studentEmail)).thenReturn(true);
+
+        assertThatThrownBy(() -> underTest.signUp(student)).isInstanceOf(EmailNotAvailableException.class);
+        verify(studentRepository, never()).save(student);
+
     }
 
 }
