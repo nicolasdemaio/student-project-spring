@@ -43,13 +43,8 @@ public class StudentService {
 
     public Student getStudent(Long studentId) {
 
-        Optional<Student> optionalStudent = studentRepository.findById(studentId);
-
-        if (optionalStudent.isEmpty()){
-            throw new EntityNotFoundException("Student not founded with ID ".concat(String.valueOf(studentId)));
-        }
-
-        return optionalStudent.get();
+        return studentRepository.findById(studentId)
+                                .orElseThrow(() -> new EntityNotFoundException("Student not founded with ID ".concat(String.valueOf(studentId))));
     }
 
     public List<Student> getStudents() {
@@ -57,8 +52,8 @@ public class StudentService {
     }
 
     public void deleteStudent(Long studentId) {
-        Student studentToDelete = this.getStudent(studentId);
 
+        Student studentToDelete = this.getStudent(studentId);
         studentRepository.deleteById(studentToDelete.getId());
     }
 

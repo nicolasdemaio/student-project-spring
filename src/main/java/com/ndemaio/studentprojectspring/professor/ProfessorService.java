@@ -23,11 +23,8 @@ public class ProfessorService {
 
     public Professor getProfessor(Long professorId){
 
-        Optional<Professor> optionalProfessor = professorRepository.findById(professorId);
-
-        if (optionalProfessor.isEmpty()) throw new EntityNotFoundException("Not exist professor with ID " + String.valueOf(professorId));
-
-        return optionalProfessor.get();
+        return professorRepository.findById(professorId)
+                                    .orElseThrow(() -> new EntityNotFoundException("Not exist professor with ID " + String.valueOf(professorId)));
     }
 
     public List<Professor> getProfessors(){
