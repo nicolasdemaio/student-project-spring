@@ -2,12 +2,19 @@
             para evitar el codigo repetitivo (boilerplate code).
                @Getters, @Setters, @NoArgsConstructor son algunas de las anotaciones.
 
-*Course Entity TDD:
-cuando es creado no tiene alumnos y su cupo es el q tiene
-cuando se agrega un alumno, lo tiene y baja su cupo
-cuando se agrega un alumno que ya esta cursando, error
-cuando se intenta agregar un alumno y no hay cupos, error.
-
 *Course Service debe mandar mail cuando se concreta una inscripcion. al mail del alumno.
 
 Hacer Test de Controller
+
+
+Logica de negocio en el propio curso.
+
+EnrollRequest tiene Student, Course.
+
+Course service se encarga de buscar en BD y guardar.
+Bussiness logic en la entidad course.
+
+EnrollRequest objeto que tiene id de alumno y id de materia.
+Se buscan a los dos y se manda a la materia a anotar al alumno.
+
+CourseService.enroll(EnrollRequest);
