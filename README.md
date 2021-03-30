@@ -13,3 +13,4 @@ Tools:
   - Lombok (to delete boilerplate code)
   - MySQL (database connection)
   - Spring Data JPA
+  - Spring Mail Server
