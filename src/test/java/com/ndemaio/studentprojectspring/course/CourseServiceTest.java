@@ -1,5 +1,8 @@
 package com.ndemaio.studentprojectspring.course;
 
+import com.ndemaio.studentprojectspring.mail.MailService;
+import com.ndemaio.studentprojectspring.student.Student;
+import com.ndemaio.studentprojectspring.student.StudentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,11 +17,15 @@ class CourseServiceTest {
 
     private CourseService underTest;
     private CourseRepository courseRepository;
+    private StudentService studentService;
+    private MailService mailService;
 
     @BeforeEach
     void setUp() {
         courseRepository = mock(CourseRepository.class);
-        underTest = new CourseService(courseRepository);
+        studentService = mock(StudentService.class);
+        mailService = mock(MailService.class);
+        underTest = new CourseService(courseRepository, studentService, mailService);
     }
 
     @Test
@@ -69,4 +76,57 @@ class CourseServiceTest {
 
         verify(courseRepository).deleteById(existentId);
     }
+
+    @Test
+    void itShouldUpdatExistentCourse(){
+        Long courseId = 1l;
+        Course courseToUpdate = mock(Course.class);
+        when(courseToUpdate.getId()).thenReturn(courseId);
+        when(courseRepository.findById(courseId)).thenReturn(Optional.of(courseToUpdate));
+        when(courseRepository.save(courseToUpdate)).thenReturn(courseToUpdate);
+
+        Course courseUpdated = underTest.update(courseToUpdate);
+
+        assertThat(courseUpdated).isEqualTo(courseToUpdate);
+        verify(courseRepository).save(courseUpdated);
+    }
+
+    @Test
+    void itShouldThrowException_whenUpdateACourseWithAInexistentId(){
+        Long inexistentId = 1l;
+        Course course = mock(Course.class);
+        when(courseRepository.findById(inexistentId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> underTest.update(course)).isInstanceOf(EntityNotFoundException.class);
+        verify(courseRepository, never()).save(any(Course.class));
+    }
+
+    @Test
+    void itShouldEnrollStudentInCourse(){
+        Long studentId = 1l;
+        Long courseId = 1l;
+        EnrollRequest enrollRequest = new EnrollRequest(1l, 1l);
+        Course course = mock(Course.class);
+        Student student = mock(Student.class);
+        when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
+        when(studentService.getStudent(studentId)).thenReturn(student);
+
+        EnrollRequest processedRequest = underTest.enroll(enrollRequest);
+
+        assertThat(processedRequest).isEqualTo(enrollRequest);
+        verify(course).addStudent(student);
+        verify(mailService).sendMail(student.getEmail(), "You have been enrolled in " + course.getSubjectName());
+    }
+
+    @Test
+    void itShouldThrowException_whenStudentIdNotExist(){
+        Long studentId = 1l;
+        doThrow(EntityNotFoundException.class).when(studentService).getStudent(studentId);
+
+        EnrollRequest enrollRequest = new EnrollRequest(studentId, 2l);
+
+        assertThatThrownBy(() -> underTest.enroll(enrollRequest)).isInstanceOf(EntityNotFoundException.class);
+        verifyNoInteractions(mailService);
+    }
+
 }

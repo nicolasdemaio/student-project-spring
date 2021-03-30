@@ -1,5 +1,8 @@
 package com.ndemaio.studentprojectspring.course;
 
+import com.ndemaio.studentprojectspring.mail.MailService;
+import com.ndemaio.studentprojectspring.student.Student;
+import com.ndemaio.studentprojectspring.student.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,10 +13,14 @@ import java.util.List;
 public class CourseService {
 
     private CourseRepository courseRepository;
+    private StudentService studentService;
+    private MailService mailService;
 
     @Autowired
-    public CourseService(CourseRepository courseRepository) {
+    public CourseService(CourseRepository courseRepository, StudentService studentService, MailService mailService) {
         this.courseRepository = courseRepository;
+        this.studentService = studentService;
+        this.mailService = mailService;
     }
 
     public List<Course> getAllCourses() {
@@ -36,5 +43,25 @@ public class CourseService {
         courseRepository.deleteById(existentId);
     }
 
-    // TODO: Update, enroll student in course (and send mail).
+    public Course update(Course course){
+
+        Course courseToUpdate = this.getCourse(course.getId());
+
+        courseToUpdate.setAvailablePlaces(course.getAvailablePlaces());
+        courseToUpdate.setProfessor(course.getProfessor());
+        courseToUpdate.setStudents(course.getStudents());
+        courseToUpdate.setSubjectName(course.getSubjectName());
+
+        return courseRepository.save(courseToUpdate);
+    }
+
+    // TODO: enroll student in course (and send mail).
+    public EnrollRequest enroll(EnrollRequest enrollRequest){
+        Student student = studentService.getStudent(enrollRequest.getStudentId());
+        Course course = this.getCourse(enrollRequest.getCourseId());
+
+        course.addStudent(student);
+        mailService.sendMail(student.getEmail(), "You have been enrolled in " + course.getSubjectName());
+        return enrollRequest;
+    }
 }
