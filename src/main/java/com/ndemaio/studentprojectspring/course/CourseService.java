@@ -55,13 +55,13 @@ public class CourseService {
         return courseRepository.save(courseToUpdate);
     }
 
-    // TODO: enroll student in course (and send mail).
     public EnrollRequest enroll(EnrollRequest enrollRequest){
         Student student = studentService.getStudent(enrollRequest.getStudentId());
         Course course = this.getCourse(enrollRequest.getCourseId());
 
         course.addStudent(student);
         mailService.sendMail(student.getEmail(), "You have been enrolled in " + course.getSubjectName());
+        courseRepository.save(course);
         return enrollRequest;
     }
 }

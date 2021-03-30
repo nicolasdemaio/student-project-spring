@@ -25,12 +25,12 @@ public class Course {
     private Long id;
     private String subjectName;
 
-    @OneToOne
+    @ManyToOne
     private Professor professor;
 
     private int availablePlaces;
 
-    @OneToMany
+    @ManyToMany
     private List<Student> students;
 
     public boolean hasEnrolledStudents() {

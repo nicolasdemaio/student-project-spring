@@ -115,6 +115,7 @@ class CourseServiceTest {
 
         assertThat(processedRequest).isEqualTo(enrollRequest);
         verify(course).addStudent(student);
+        verify(courseRepository).save(course);
         verify(mailService).sendMail(student.getEmail(), "You have been enrolled in " + course.getSubjectName());
     }
 
@@ -127,6 +128,7 @@ class CourseServiceTest {
 
         assertThatThrownBy(() -> underTest.enroll(enrollRequest)).isInstanceOf(EntityNotFoundException.class);
         verifyNoInteractions(mailService);
+        verify(courseRepository, never()).save(any(Course.class));
     }
 
 }
