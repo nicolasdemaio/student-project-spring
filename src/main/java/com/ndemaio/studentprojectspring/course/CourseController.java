@@ -49,9 +49,10 @@ public class CourseController {
         return ResponseEntity.status(HttpStatus.OK).body(courseService.update(course));
     }
 
-    @PostMapping (path = "/enroll")
-    public ResponseEntity<EnrollRequest> enroll(@RequestBody EnrollRequest enrollRequest){
+    @PostMapping (path = "{courseId}/enrollments")
+    public ResponseEntity<EnrollRequest> enroll(@PathVariable Long courseId, @RequestParam(value = "studentId") Long studentId){
 
+        EnrollRequest enrollRequest = new EnrollRequest(studentId, courseId);
         return ResponseEntity.status(HttpStatus.CREATED).body(courseService.enroll(enrollRequest));
     }
 
