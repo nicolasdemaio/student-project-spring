@@ -14,3 +14,4 @@ Tools:
   - MySQL (database connection)
   - Spring Data JPA
   - Spring Mail Server
+  - Swagger2 (to document the endpoints)
