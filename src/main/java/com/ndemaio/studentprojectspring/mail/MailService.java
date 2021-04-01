@@ -20,7 +20,7 @@ public class MailService {
 
         email.setTo(emailTo);
         email.setText(message);
-        email.setFrom("nicolas.demaio19@gmail.com");
+        email.setFrom("studentprojectspring@gmail.com"); // Correo para envio automatico
 
         mailSender.send(email);
     }
